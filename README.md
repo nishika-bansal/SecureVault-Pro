@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-
-=======
 # SecureVault Pro
 
 SecureVault Pro is a full-stack MERN password manager built with React, Node.js, Express, MongoDB, JWT authentication, bcrypt password hashing, and AES-256-GCM encryption for stored vault passwords.
@@ -113,4 +110,3 @@ Base URL: `http://localhost:5000/api`
 - Secured stored vault passwords using AES-256-GCM encryption.
 - Designed REST APIs with protected routes, input validation, rate limiting, and MVC architecture.
 - Built a responsive dashboard with credential CRUD, search, category filtering, favorites, show/hide password, copy password, dark mode, strength meter, and password generator.
->>>>>>> cc3cad6 (Initial commit - SecureVault Pro)

@@ -53,16 +53,16 @@ SecureVault Pro is a full-stack MERN password manager built with React, Node.js,
 ## Screenshots
 
 ### Dashboard
-![Dashboard](./screenshots/dashboard.png)
+![Dashboard](./screenshots/Dashboard.png)
 
 ### Login Page
-![Login](./screenshots/login.png)
+![Login](./screenshots/Login.png)
 
 ### Add Credential
-![Add Credential](./screenshots/add.png)
+![Add Credential](./screenshots/AddCredential.png)
 
 ### Dark Mode
-![Dark Mode](./screenshots/darkmode.png)
+![Dark Mode](./screenshots/DarkMode.png)
 
 ## Run In VS Code
 

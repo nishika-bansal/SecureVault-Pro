@@ -3,41 +3,67 @@ import express from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import morgan from 'morgan';
+
 import authRoutes from './routes/authRoutes.js';
 import credentialRoutes from './routes/credentialRoutes.js';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
 
 const app = express();
 
-const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+/**
+ * ========================
+ * CORS CONFIG (PRODUCTION SAFE)
+ * ========================
+ */
+const allowedOrigins = (process.env.CLIENT_URL || '')
   .split(',')
-  .map((origin) => origin.trim());
+  .map(origin => origin.trim());
 
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (Postman, mobile apps)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  credentials: true
+}));
+
+/**
+ * ========================
+ * SECURITY MIDDLEWARE
+ * ========================
+ */
 app.use(helmet());
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-        return;
-      }
-      callback(new Error('Origin is not allowed by CORS'));
-    },
-    credentials: true
-  })
-);
+
 app.use(express.json({ limit: '1mb' }));
+
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+
+/**
+ * ========================
+ * RATE LIMITING
+ * ========================
+ */
 app.use(
   rateLimit({
-    windowMs: 15 * 60 * 1000,
-    limit: 250,
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 250, // requests per IP
     standardHeaders: true,
     legacyHeaders: false
   })
 );
 
-app.get('/health', (_req, res) => {
+/**
+ * ========================
+ * HEALTH CHECK ROUTE
+ * ========================
+ */
+app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
     service: 'SecureVault Pro API',
@@ -45,9 +71,19 @@ app.get('/health', (_req, res) => {
   });
 });
 
+/**
+ * ========================
+ * API ROUTES
+ * ========================
+ */
 app.use('/api/auth', authRoutes);
 app.use('/api/credentials', credentialRoutes);
 
+/**
+ * ========================
+ * ERROR HANDLING
+ * ========================
+ */
 app.use(notFound);
 app.use(errorHandler);
 
